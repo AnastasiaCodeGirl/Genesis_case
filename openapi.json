@@ -1,0 +1,98 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "GSES2 BTC application"
+  },
+  "servers": [
+    {
+      "url": "http://gses2.app/api"
+    }
+  ],
+  "tags": [
+    {
+      "name": "rate",
+      "description": "Отримання поточного курсу BTC до UAH"
+    },
+    {
+      "name": "subscription",
+      "description": "Робота з підпискою"
+    }
+  ],
+  "paths": {
+    "/rate": {
+      "get": {
+        "tags": [
+          "rate"
+        ],
+        "summary": "Отримати поточний курс BTC до UAH",
+        "description": "Запит повертає поточний курс BTC до UAH використовуючи будь-який сервіс з публічним API.",
+        "operationId": "getRate",
+        "responses": {
+          "200": {
+            "description": "Повертається актуальний курс BTC до UAH",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Некоректне значення статусу"
+          }
+        }
+      }
+    },
+    "/subscribe": {
+      "post": {
+        "tags": [
+          "subscription"
+        ],
+        "summary": "Підписати емейл на отримання поточного курсу",
+        "description": "Запит перевіряє, чи є ця електронна адреса в базі даних і, якщо немає, додає її.",
+        "operationId": "subscribeEmail",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Електронна адреса, яку потрібно підписати"
+                  }
+                },
+                "required": ["email"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Електронну адресу додано"
+          },
+          "409": {
+            "description": "Повертається, якщо електронна адреса вже є в базі даних"
+          }
+        }
+      }
+    },
+    "/sendEmails": {
+      "post": {
+        "tags": [
+          "subscription"
+        ],
+        "summary": "Відправити емейли з поточним курсом всім підписаним адресам",
+        "description": "Запит отримує актуальний курс BTC до UAH за допомогою сервісу стороннього API та відправляє його на всі електронні адреси, які були підписані раніше.",
+        "operationId": "sendEmails",
+        "responses": {
+          "200": {
+            "description": "Емейли успішно відправлені"
+          }
+        }
+      }
+    }
+  }
+}
